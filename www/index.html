@@ -16,30 +16,30 @@
 		<!-- <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes, minimum-scale=1, maximum-scale=2"> -->
 
 		<style>
-			header{
-			                background-color: #0088d1;
-			            }
-			            footer{
-			                background-color: #0088d1;
-			            }
-			            #afui #content, #afui_modal, #modalContainer{
-			                background-color: white;
-			                color: black;
-			            }
-			            #afui.android .footer>footer>a.pressed:not(.button) {
-			                border: 0;
-			                border-top: 0px;
-			                border-radius: 0;
-			                background: 0;
-			}
-			            
-			            
-						/* following three (cascaded) are equivalent to above three meta viewport statements */
-						            /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html */
-						            /* see http://dev.w3.org/csswg/css-device-adapt/ */
-						                @-ms-viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }          @viewport { width: 100vw ; min-zoom: 100% zoom: 100% ; }
-						                @-ms-viewport { user-zoom: fixed ; min-zoom: 100% ; }                   @viewport { user-zoom: fixed ; min-zoom: 100% ; }
-						                /*@-ms-viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }   @viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }*/
+			/*	header{
+				                background-color: #0088d1;
+				            }
+				            footer{
+				                background-color: #0088d1;
+				            }
+				            #afui #content, #afui_modal, #modalContainer{
+				                background-color: white;
+				                color: black;
+				            }*/
+				            #afui.android .footer>footer>a.pressed:not(.button) {
+				                border: 0;
+				                border-top: 0px;
+				                border-radius: 0;
+				                background: 0;
+				}
+				            
+				            
+							/* following three (cascaded) are equivalent to above three meta viewport statements */
+							            /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html */
+							            /* see http://dev.w3.org/csswg/css-device-adapt/ */
+							                @-ms-viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }          @viewport { width: 100vw ; min-zoom: 100% zoom: 100% ; }
+							                @-ms-viewport { user-zoom: fixed ; min-zoom: 100% ; }                   @viewport { user-zoom: fixed ; min-zoom: 100% ; }
+							                /*@-ms-viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }   @viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }*/
 		</style>
 
 		<link rel="stylesheet" href="css/app.css">
@@ -60,9 +60,10 @@
 		<script type="application/javascript" src="app_framework/2.1/appframework.ui.js" data-ver="1"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script type="application/javascript" src="app_framework/themeRelease.js"></script>
 	</head>
 
-	<body id="afui" ng-app="myApp" ng-controller="usersCtrl">
+	<body id="afui" ng-app="myApp" ng-controller="usersCtrl" class="af">
 
 		<!--header for main-->
 		<header class="wrapping-col wrap-element uib_w_2" data-uib="app_framework/header" data-ver="2" id="af-header-3">
@@ -89,7 +90,7 @@
 		<!--footer for details-->
 		<footer class="wrap-element uib_w_10" data-uib="app_framework/footer" data-ver="1" id="af-footer-2">
 			<a href="#" class="icon download" ng-click="editContact()">Save</a>
-            <a href="#" class="icon remove" ng-click="removeContact()">Delete</a>
+			<a href="#" class="icon remove" ng-click="removeContact()">Delete</a>
 		</footer>
 		<div class="uwrap" id="content">
 			<div class="upage vertical-col left panel" id="mainpage" data-header="af-header-3" data-footer="af-footer-0">
@@ -133,155 +134,186 @@
 					<input class="wide-control" placeholder="Placeholder Text" type="text" ng-model="tel" ng-disabled="noedit" ng-change="validate()">
 				</div>
 				<div class="widget uib_w_16 d-margins" data-uib="app_framework/checkbox" data-ver="1">
-					<input type="checkbox" id="af-checkbox-0" ng-click="edit()" ng-model="checkboxmodel"
-           ng-true-value="true" ng-false-value="false">
+					<input type="checkbox" id="af-checkbox-0" ng-click="edit()" ng-model="checkboxmodel" ng-true-value="true" ng-false-value="false">
 					<label class="content-box" for="af-checkbox-0">Edit contact</label>
 				</div>
+
+				<img src="" id="picture" width="200" height="150">
+				<button onclick="captureCamera();">Take a Picture</button>
 			</div>
 		</div>
 
 		<script>
-			var app = angular.module('myApp', []);
-			app.controller('usersCtrl', function($scope, $http) {
-				$http.get("http://localhost/cgi-bin/contacts.pl")
-			    .success(function(response) {
-			    	$scope.names = response.records;
-			    	});
-				
-				//console.log(response.records);	
-				$scope.edit = function() {	
-                    if($scope.noedit == true){
-                        $scope.noedit = false;
-                    }
-                    else{
-                        $scope.noedit = true; 
-                    }
-				};
-                
-                $scope.noedit = function() {			
-				    $scope.noedit = true; 
-				};
-                
-				$scope.editContact = function() {			
-				    if($scope.notValid == true){
-                        //intel.xdk.notification.alert("not valid");
-                        return; 
-                    }
-                       $scope.checkboxmodel = false;
-					var data = {'action':'update','firstname':$scope.fname,'lastname':$scope.lname,'tel':$scope.tel, 'id':$scope.idToEdit};
-                    
-                        angular.forEach($scope.names, function(item) {
-                            console.log(item.firstname);
-                        if(item.id == $scope.idToEdit){
-                            item.firstname = $scope.fname;
-                            item.lastname = $scope.lname;
-                            item.tel = $scope.tel;
-                           // intel.xdk.notification.alert("2");
-                            $scope.noedit = true;
-                        }
-                    });
-						$http({
-						    method: 'POST',
-						    url: 'http://localhost/cgi-bin/contacts.pl',
-						    data: JSON.stringify(data),
-						    contentType: "application/json; charset=utf-8",
-						    success: function(response){
-                               /// intel.xdk.notification.alert("2");
-						    }
+			function captureCamera()
+			        {
+			            /*this function opens default camera app and captures a picture. It stores the captured image in application storage. Parameters:
+			            1. Quality 0-100
+			            2. Should stores the picture in photo library of phone also or not
+			            3. Image format png or jpg
+			            */
+			            intel.xdk.camera.takePicture(10,true,"png");
+			        }
+			            
+			            //fired when picture is successfully captured using camera or imported from photo library. 
+			        document.addEventListener("intel.xdk.camera.picture.add",function(event){
+			            alert("Picture added to application local storage");
+			                        //picture name
+			            var name = event.filename;
+			           
+			            //absolute URL of the image
+			            var url = intel.xdk.camera.getPictureURL(name);
+			           
+			            //dislay the image
+			            document.getElementById("picture").setAttribute("src", url);
+			        }); 
+			            
+			            //fired when user clicks cancel instead of capturing an image or importing.
+			        document.addEventListener("intel.xdk.camera.picture.cancel",function(){
+			            alert("You pressed the cancel button");
+			        });
+			            
+			            
+						var app = angular.module('myApp', []);
+						app.controller('usersCtrl', function($scope, $http) {
+							$http.get("http://localhost/cgi-bin/contacts.pl")
+						    .success(function(response) {
+						    	$scope.names = response.records;
+						    	});
+							
+							//console.log(response.records);	
+							$scope.edit = function() {	
+			                    if($scope.noedit == true){
+			                        $scope.noedit = false;
+			                    }
+			                    else{
+			                        $scope.noedit = true; 
+			                    }
+							};
+			                
+			                $scope.noedit = function() {			
+							    $scope.noedit = true; 
+							};
+			                
+							$scope.editContact = function() {			
+							    if($scope.notValid == true){
+			                        //intel.xdk.notification.alert("not valid");
+			                        return; 
+			                    }
+			                       $scope.checkboxmodel = false;
+								var data = {'action':'update','firstname':$scope.fname,'lastname':$scope.lname,'tel':$scope.tel, 'id':$scope.idToEdit};
+			                    
+			                        angular.forEach($scope.names, function(item) {
+			                            console.log(item.firstname);
+			                        if(item.id == $scope.idToEdit){
+			                            item.firstname = $scope.fname;
+			                            item.lastname = $scope.lname;
+			                            item.tel = $scope.tel;
+			                           // intel.xdk.notification.alert("2");
+			                            $scope.noedit = true;
+			                        }
+			                    });
+									$http({
+									    method: 'POST',
+									    url: 'http://localhost/cgi-bin/contacts.pl',
+									    data: JSON.stringify(data),
+									    contentType: "application/json; charset=utf-8",
+									    success: function(response){
+			                               /// intel.xdk.notification.alert("2");
+									    }
+									});
+			                    window.location.href = "#mainpage";
+			                    
+							};
+							
+			                $scope.removeContact = function() {			
+							    if($scope.notValid == true){
+			                        //intel.xdk.notification.alert("not valid");
+			                        return; 
+			                    }
+			                       $scope.checkboxmodel = false;
+								var data = {'action':'remove','id':$scope.idToEdit};
+			                    
+			                        angular.forEach($scope.names, function(item) {
+			                           // console.log(item.firstname);
+			                            
+			                        if(item.id == $scope.idToEdit){
+			                            var index=$scope.names.indexOf(item);
+			                            $scope.names.splice(index, 1);
+			
+			                            $scope.noedit = true;
+			                        }
+			                    });
+									$http({
+									    method: 'POST',
+									    url: 'http://localhost/cgi-bin/contacts.pl',
+									    data: JSON.stringify(data),
+									    contentType: "application/json; charset=utf-8",
+									    success: function(response){
+									//        $scope.names = response.records;
+									    }
+									});
+			                     window.location.href = "#mainpage";
+							};
+			                
+							$scope.newContact = function(){
+								$scope.fname = "";
+								$scope.lname = "";
+								$scope.tel = "";
+								$scope.validate();
+							};
+			                
+			                $scope.showDetails = function(id){
+			                    angular.forEach($scope.names, function(item) {
+			                        if(item.id == id){
+			                            $scope.fname = item.firstname;
+			                            $scope.lname = item.lastname;
+			                            $scope.tel = item.tel;
+			                            $scope.noedit = true;
+			                            $scope.idToEdit = id;
+			                          //  console.log(item.firstname);
+			                        }
+			                    });
+			                };
+			                
+							
+							$scope.save = function(){
+			                    //intel.xdk.notification.alert($scope.notValid);
+			                    if($scope.notValid == true){
+			                        //intel.xdk.notification.alert("not valid");
+			                        return; 
+			                    }
+			                       
+			                    //intel.xdk.notification.alert("valid");
+								//if($scope.create = true){
+									var data = {'action':'create','firstname':$scope.fname,'lastname':$scope.lname,'tel':$scope.tel};
+									$scope.names.push(data);
+									$http({
+									    method: 'POST',
+									    url: 'http://localhost/cgi-bin/contacts.pl',
+									    data: JSON.stringify(data),
+									    contentType: "application/json; charset=utf-8",
+									    success: function(response){
+									//        $scope.names = response.records;
+									    }
+									});
+								//}
+								//else{
+									 window.location.href = "#mainpage";
+								//}
+							};
+							
+							$scope.validate = function(){
+			                    intel.xdk.notification.alert("test");
+			                    
+								if($scope.fname && $scope.lname && $scope.tel){
+									$scope.notValid = false;
+								}
+								else{
+									$scope.notValid = true;
+								}
+							};
+							
 						});
-                    window.location.href = "#mainpage";
-                    
-				};
-				
-                $scope.removeContact = function() {			
-				    if($scope.notValid == true){
-                        //intel.xdk.notification.alert("not valid");
-                        return; 
-                    }
-                       $scope.checkboxmodel = false;
-					var data = {'action':'remove','id':$scope.idToEdit};
-                    
-                        angular.forEach($scope.names, function(item) {
-                           // console.log(item.firstname);
-                            
-                        if(item.id == $scope.idToEdit){
-                            var index=$scope.names.indexOf(item);
-                            $scope.names.splice(index, 1);
-
-                            $scope.noedit = true;
-                        }
-                    });
-						$http({
-						    method: 'POST',
-						    url: 'http://localhost/cgi-bin/contacts.pl',
-						    data: JSON.stringify(data),
-						    contentType: "application/json; charset=utf-8",
-						    success: function(response){
-						//        $scope.names = response.records;
-						    }
-						});
-                     window.location.href = "#mainpage";
-				};
-                
-				$scope.newContact = function(){
-					$scope.fname = "";
-					$scope.lname = "";
-					$scope.tel = "";
-					$scope.validate();
-				};
-                
-                $scope.showDetails = function(id){
-                    angular.forEach($scope.names, function(item) {
-                        if(item.id == id){
-                            $scope.fname = item.firstname;
-                            $scope.lname = item.lastname;
-                            $scope.tel = item.tel;
-                            $scope.noedit = true;
-                            $scope.idToEdit = id;
-                          //  console.log(item.firstname);
-                        }
-                    });
-                };
-                
-				
-				$scope.save = function(){
-                    //intel.xdk.notification.alert($scope.notValid);
-                    if($scope.notValid == true){
-                        //intel.xdk.notification.alert("not valid");
-                        return; 
-                    }
-                       
-                    //intel.xdk.notification.alert("valid");
-					//if($scope.create = true){
-						var data = {'action':'create','firstname':$scope.fname,'lastname':$scope.lname,'tel':$scope.tel};
-						$scope.names.push(data);
-						$http({
-						    method: 'POST',
-						    url: 'http://localhost/cgi-bin/contacts.pl',
-						    data: JSON.stringify(data),
-						    contentType: "application/json; charset=utf-8",
-						    success: function(response){
-						//        $scope.names = response.records;
-						    }
-						});
-					//}
-					//else{
-						 window.location.href = "#mainpage";
-					//}
-				};
-				
-				$scope.validate = function(){
-                    intel.xdk.notification.alert("test");
-                    
-					if($scope.fname && $scope.lname && $scope.tel){
-						$scope.notValid = false;
-					}
-					else{
-						$scope.notValid = true;
-					}
-				};
-				
-			});
 		</script>
 
 	</body>
