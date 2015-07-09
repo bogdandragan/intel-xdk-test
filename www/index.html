@@ -187,8 +187,6 @@
 						    contentType: "application/json; charset=utf-8",
 						    success: function(response){
                                /// intel.xdk.notification.alert("2");
-                                
-						//        $scope.names = response.records;
 						    }
 						});
                     window.location.href = "#mainpage";
@@ -209,11 +207,7 @@
                         if(item.id == $scope.idToEdit){
                             var index=$scope.names.indexOf(item);
                             $scope.names.splice(index, 1);
-                            //intel.xdk.notification.alert("2");
-                          //  item.firstname = $scope.fname;
-                        //    item.lastname = $scope.lname;
-                        //    item.tel = $scope.tel;
-                           // intel.xdk.notification.alert("2");
+
                             $scope.noedit = true;
                         }
                     });
